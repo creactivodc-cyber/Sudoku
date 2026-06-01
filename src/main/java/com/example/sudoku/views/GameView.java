@@ -1,6 +1,6 @@
 package com.example.sudoku.views;
 
-import com.example.soleclipsado.controllers.GameController;
+import com.example.sudoku.controllers.GameController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,21 +14,21 @@ public class GameView extends Stage {
 
 
     public GameView() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/sudoku/game-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/sudoku/game-view2.fxml"));
         Parent root = fxmlLoader.load();
 
         //Instancia del controlador para realizar operaciones sobre este fxml
         controller = fxmlLoader.getController();
 
         Scene scene = new Scene(root);
-        setTitle("Sol Eclipsado");
+        setTitle("SUDOKU");
         setScene(scene);
         setResizable(false);
     }
 
-    public GameController getController(){
-        return controller;
-    }
+//    public GameController getController(){
+//        return controller;
+//    }
 
     public static class GameViewHolder {
         private static GameView INSTANCE = null;
