@@ -4,8 +4,7 @@ import com.example.sudoku.models.AlertBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
-import java.awt.event.MouseEvent;
+import com.example.sudoku.models.Grid;
 
 public class GameController {
 
@@ -13,7 +12,7 @@ public class GameController {
     @FXML private Button helpButton;
     @FXML private Button enterButton;
 
-    @FXML void onActionHelpButton(){}
+    @FXML void onActionHelpButton() {}
 
     @FXML void onActionEnterButton(){
         AlertBox alertBox = new AlertBox();
@@ -34,4 +33,9 @@ public class GameController {
             System.out.println("El usuario canceló la acción.");
         }
     }
+
+    private Grid grid = new Grid();
+    
+    int result = grid.generateGrid();
+
 }
