@@ -1,15 +1,20 @@
 package com.example.sudoku.controllers;
 
 import com.example.sudoku.models.AlertBox;
+import com.example.sudoku.models.Grid;
+import com.example.sudoku.models.CharField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import com.example.sudoku.models.Grid;
+import javafx.scene.layout.HBox;
+
+import java.util.ArrayList;
 
 public class GameController {
 
     @FXML private Label sudokuLabel;
-    @FXML private Button helpButton;
+    @FXML HBox HboxFields;
+    @FXML Button helpButton;
     @FXML private Button enterButton;
 
     @FXML void onActionHelpButton() {}
@@ -36,6 +41,26 @@ public class GameController {
 
     private Grid grid = new Grid();
     
-    int result = grid.generateGrid();
+    private ArrayList<Integer> gridValues = grid.getGrid();
+
+    
+    public void initialize() {
+        
+        HboxFields.getChildren().clear();
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                System.out.println("Valores de la cuadrícula: " + gridValues.get(j).toString().charAt(0));
+
+                CharField charField = new CharField(gridValues.get(j).toString().charAt(0));
+                charField.setPrefWidth(30);
+                //charField.setAlignment(Pos.CENTER);
+
+                
+                HboxFields.getChildren().add(charField);
+            }
+
+        }
+    }
 
 }

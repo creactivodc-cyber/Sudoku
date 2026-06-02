@@ -24,11 +24,9 @@ public class GameView extends Stage {
         setTitle("SUDOKU");
         setScene(scene);
         setResizable(false);
-    }
+        controller.initialize();
+}
 
-//    public GameController getController(){
-//        return controller;
-//    }
 
     public static class GameViewHolder {
         private static GameView INSTANCE = null;
