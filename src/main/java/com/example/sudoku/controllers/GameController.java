@@ -1,11 +1,12 @@
 package com.example.sudoku.controllers;
 
 import com.example.sudoku.models.AlertBox;
-import com.example.sudoku.models.Grid;
 import com.example.sudoku.models.CharField;
+import com.example.sudoku.models.Grid;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class GameController {
 
     @FXML private Label sudokuLabel;
     @FXML HBox HboxFields;
+    @FXML GridPane GridLabel;
     @FXML Button helpButton;
     @FXML private Button enterButton;
 
@@ -46,7 +48,7 @@ public class GameController {
     
     public void initialize() {
         
-        HboxFields.getChildren().clear();
+        GridLabel.getChildren().clear();
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
@@ -59,8 +61,6 @@ public class GameController {
                 
                 HboxFields.getChildren().add(charField);
             }
-
         }
     }
-
 }
