@@ -47,6 +47,7 @@ public class Grid {
             gridColumnList.add(randomNumber);
         };
         gridList.addAll(gridColumnList.subList(0, size));
+        System.out.println("Fila " + (i + 1) + ": " + gridColumnList);
             
     };
     };
