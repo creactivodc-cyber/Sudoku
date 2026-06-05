@@ -15,7 +15,7 @@ public class GameController {
 
     @FXML private Label sudokuLabel;
     @FXML HBox HboxFields;
-    @FXML GridPane GridLabel;
+    @FXML GridPane gridLabel;
     @FXML Button helpButton;
     @FXML private Button enterButton;
 
@@ -43,23 +43,22 @@ public class GameController {
 
     private Grid grid = new Grid();
     
-    private ArrayList<String> gridValues = grid.getGrid();
+    private ArrayList<Integer> gridValues = grid.getGrid();
 
     
     public void initialize() {
         
-        GridLabel.getChildren().clear();
+        gridLabel.getChildren().clear();
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
                 System.out.println(gridValues.get(j).toString().charAt(0));
 
                 CharField charField = new CharField(gridValues.get(j).toString().charAt(0));
-                charField.setPrefWidth(30);
+                charField.setPrefWidth(50);
                 //charField.setAlignment(Pos.CENTER);
 
-                
-                HboxFields.getChildren().add(charField);
+                gridLabel.add(charField, j, i);
             }
         }
     }
