@@ -14,10 +14,14 @@ import java.util.ArrayList;
 public class GameController {
 
     @FXML private Label sudokuLabel;
-    @FXML HBox HboxFields;
-    @FXML GridPane gridLabel;
-    @FXML Button helpButton;
+    @FXML private HBox HboxFields;
+    @FXML private GridPane gridLabel;
+    @FXML private Button helpButton;
     @FXML private Button enterButton;
+
+    private Grid grid = new Grid();
+
+    private ArrayList<String> gridValues = grid.getGrid();
 
     @FXML void onActionHelpButton() {}
 
@@ -41,24 +45,27 @@ public class GameController {
         }
     }
 
-    private Grid grid = new Grid();
-    
-    private ArrayList<Integer> gridValues = grid.getGrid();
+    @FXML void initialize() {
 
-    
-    public void initialize() {
-        
         gridLabel.getChildren().clear();
 
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                System.out.println(gridValues.get(j).toString().charAt(0));
+        for (int fila = 0; fila < 6; fila++) {
+            for (int col = 0; col < 6; col++) {
 
-                CharField charField = new CharField(gridValues.get(j).toString().charAt(0));
-                charField.setPrefWidth(50);
+                int index = (fila * 6) + col;
+
+                char value = gridValues.get(index).toString().charAt(0);
+
+                CharField charField = new CharField(String.valueOf(value));
+
+                charField.setPrefWidth(100);
+
+                gridLabel.add(charField, col, fila);
+
                 //charField.setAlignment(Pos.CENTER);
+                //System.out.println(gridValues.get(col).toString().charAt(0));
+                //CharField charField = new CharField(gridValues.get(col).toString().charAt(0));
 
-                gridLabel.add(charField, j, i);
             }
         }
     }

@@ -2,31 +2,22 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controllers.GameController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controllers.GameController">
     <children>
-        <HBox fx:id="HboxFields" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: gray;">
+        <HBox fx:id="HboxFields" alignment="CENTER" style="-fx-background-color: gray;">
             <children>
                 <GridPane fx:id="gridLabel" alignment="CENTER" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
                     <padding>
                         <Insets bottom="52.0" left="52.0" right="52.0" top="52.0" />
                     </padding>
-
                     <children>
                     </children>
                 </GridPane>
