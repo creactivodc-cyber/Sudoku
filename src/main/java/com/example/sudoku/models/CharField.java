@@ -11,7 +11,7 @@ public class CharField extends TextArea {
     public CharField(char letter) {
         this.num_char = letter;
         setText(String.valueOf(letter));
-        System.out.println("Caracter mostrado: " + letter);
+        //System.out.println("Caracter mostrado: " + letter);
     }
 
 

@@ -9,7 +9,7 @@ public class Grid {
     int suma[] = new int[size];
 
     /** Listas dinámicas para almacenar los números de las filas y columnas */
-    ArrayList<Integer> gridList = new ArrayList<>();
+    ArrayList<String> gridList = new ArrayList<>();
     
     /**
      * Valida si un número puede ser colocado en una posición específica de la cuadrícula
@@ -39,20 +39,21 @@ public class Grid {
 
     public void generateGrid() {
     for (int i = 0; i < size; i++) {
-        ArrayList<Integer> gridColumnList = new ArrayList<>();
+        ArrayList<String> gridColumnList = new ArrayList<>();
         for (int j = 0; j < size; j++) {
             int randomNumber;
             do {
                 randomNumber = randomNum(); 
-            } while (gridColumnList.contains(randomNumber) || randomNumber == 0);
-            gridColumnList.add(randomNumber);
+            } while (gridColumnList.contains(String.valueOf(randomNumber)) || String.valueOf(randomNumber).equals("0"));
+            gridColumnList.add(String.valueOf(randomNumber));
         };
         gridList.addAll(gridColumnList.subList(0, size));
+        gridList.add("\n");
             
     };
     };
  
-    public ArrayList<Integer> getGrid() {
+    public ArrayList<String> getGrid() {
         generateGrid();
         return gridList;
     }

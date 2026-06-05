@@ -41,7 +41,7 @@ public class GameController {
 
     private Grid grid = new Grid();
     
-    private ArrayList<Integer> gridValues = grid.getGrid();
+    private ArrayList<String> gridValues = grid.getGrid();
 
     
     public void initialize() {
@@ -50,7 +50,7 @@ public class GameController {
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
-                System.out.println("Valores de la cuadrícula: " + gridValues.get(j).toString().charAt(0));
+                System.out.println(gridValues.get(j).toString().charAt(0));
 
                 CharField charField = new CharField(gridValues.get(j).toString().charAt(0));
                 charField.setPrefWidth(30);
