@@ -18,18 +18,17 @@ public class Grid {
      * @param number Número a validar
      * @return true si el número puede ser colocado, false en caso contrario
     */ 
-    /*boolean validation (int row, int column, int number) {
-        /** Validación de filas *
-        if (gridRowList.get(row) == number) {
+    boolean validation (int row, int column, int number) {
+        /** Validación de filas */
+        if (row == number) {
             return true;
         }
-        /** Validación de columnas *
-        if (gridColumnList.get(column) == number) {
+        /** Validación de columnas */
+        if (column == number) {
             return true;
         }
-        
         return true;
-    };*/
+    };
 
    
     int randomNum() {
@@ -41,14 +40,13 @@ public class Grid {
     for (int i = 0; i < size; i++) {
         ArrayList<String> gridColumnList = new ArrayList<>();
         for (int j = 0; j < size; j++) {
-            int randomNumber;
+            String randomNumber;
             do {
-                randomNumber = randomNum(); 
-            } while (gridColumnList.contains(String.valueOf(randomNumber)) || String.valueOf(randomNumber).equals("0"));
-            gridColumnList.add(String.valueOf(randomNumber));
+                randomNumber = String.valueOf(randomNum()); 
+            } while (gridColumnList.contains(randomNumber) || randomNumber == "0");
+            gridColumnList.add(randomNumber);
         };
         gridList.addAll(gridColumnList.subList(0, size));
-        gridList.add("\n");
             
     };
     };
