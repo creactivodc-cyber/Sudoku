@@ -1,10 +1,8 @@
 package com.example.sudoku.models;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
-
 
 public class CharField extends TextField {
 
@@ -13,11 +11,21 @@ public class CharField extends TextField {
     public CharField(char letter) {
         this.num_char = letter;
         super.setText(String.valueOf(letter));
+        stylesApply();
+    }
+
+    public CharField() {
+        super.setText("");
+        stylesApply();
+    }
+
+    private void stylesApply(){
         this.setFont(Font.font("Arial Bold", 20));
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(100, 100);
-        //System.out.println("Caracter mostrado: " + letter);
+
     }
+
 
 //    public void setNum(char c) {
 //        this.num_char = c;

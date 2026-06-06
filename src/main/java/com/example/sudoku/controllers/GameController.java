@@ -21,7 +21,7 @@ public class GameController {
 
     private Grid grid = new Grid();
 
-    private ArrayList<String> gridValues = grid.getGrid();
+    private ArrayList<Integer> gridValues = grid.getGrid();
 
     @FXML void onActionHelpButton() {}
 
@@ -45,21 +45,31 @@ public class GameController {
         }
     }
 
-    @FXML void initialize() {
-
+    public void initialize() {
         gridLabel.getChildren().clear();
 
         for (int fila = 0; fila < 6; fila++) {
             for (int col = 0; col < 6; col++) {
 
                 int index = (fila * 6) + col;
+                int number_result = gridValues.get(index);
 
-                char value = gridValues.get(index).toString().charAt(0);
+                //Probabilidad para ocultar casilla (60%)
+                boolean hideBox = Math.random() < 0.6;
 
-                CharField charField = new CharField(String.valueOf(value));
+                CharField charField;
+
+                if (hideBox) {
+                    charField = new CharField();
+                    charField.setStyle("-fx-background-color: #ffffff;");
+                } else {
+                    char numberChar = String.valueOf(number_result).charAt(0);
+                    charField = new CharField(numberChar);
+                    charField.setEditable(false);
+                    charField.setStyle("-fx-background-color: #e0e0e0;");
+                }
 
                 charField.setPrefWidth(100);
-
                 gridLabel.add(charField, col, fila);
 
                 //charField.setAlignment(Pos.CENTER);
