@@ -3,6 +3,7 @@ package com.example.sudoku.controllers;
 import com.example.sudoku.models.AlertBox;
 import com.example.sudoku.models.CharField;
 import com.example.sudoku.models.Grid;
+import com.example.sudoku.models.Helps;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,7 +24,20 @@ public class GameController {
 
     private ArrayList<Integer> gridValues = grid.getGrid();
 
-    @FXML void onActionHelpButton() {}
+    @FXML void onActionHelpButton() {
+        Helps helps = new Helps();
+
+        boolean help = helps.revealNumber(gridLabel, gridValues);
+
+        if (!help) {
+            AlertBox alertBox = new AlertBox();
+            alertBox.showAlertBox(
+                    "Límite de Ayudas",
+                    "No hay más ayudas disponibles.",
+                    "¡Ya casi lo logras! Te quedan 2 números o menos para terminar."
+            );
+        }
+    }
 
     @FXML void onActionEnterButton(){}
 
@@ -77,7 +91,7 @@ public class GameController {
                 /* If - else en una sola línea
                 * Si hideBox es True, el fondo séra blanco, Si es False, séra gris.
                 * */
-                String backGroundColor = hideBox ? "-fx-background-color: #ffffff;" : "-fx-background-color: #e0e0e0;";
+                String backGroundColor = hideBox ? "-fx-background-color: #ffffff;" : "-fx-background-color: #cecece;";
 
                 /*
                 * Si la casilla debe estar oculta, llama al constructor vacío (séra blanca la casilla)
