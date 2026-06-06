@@ -95,12 +95,78 @@ public class GameController {
                 String estiloBordes = String.format("-fx-border-color: black; -fx-border-width: %d %d %d %d;",
                         bordeArriba, bordeDerecha, bordeAbajo, bordeIzquierda);
 
-                charField.setStyle(backGroundColor + " " + estiloBordes);
+                //Establecer por defecto el estilo en color negro con bordes negros y fondo negro al Char.
+                charField.setStyle(backGroundColor + " " + estiloBordes + " -fx-text-fill: black;");
 
                 charField.setPrefWidth(100);
                 gridLabel.add(charField, col, fila);
 
+                /**
+                 * Si la casilla es editable (Está oculta), se agrega un Listener.
+                 * Evento para escuchar cada tecla presionada por el jugador para validar.
+                 */
+                if(hideBox) {
+                    final int f = fila;
+                    final int c = col;
+
+                    charField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        validateBlockRealTime(charField, newValue, f, c);
+                    });
+                }
             }
+        }
+    }
+
+    /**
+     * Validación en tiempo real si el número del jugador existe.
+     * La comparación válida dentro del bloque 2x3 Si el número se repite,
+     * cambiará el color de texto si el número se repite para alertar.
+     * @param currentCell La casilla (CharField) que el jugador edita actualmente.
+     * @param valueEnter El texto/número que el jugador acaba de dígitar.
+     * @param currentRow La posición actual en Y (row - fila).
+     * @param currentCol La posición actual en x (col - columna).
+     */
+    private void validateBlockRealTime(CharField currentCell, String valueEnter, int currentRow, int currentCol) {
+
+        //Si el jugador borra el contenido, entonces se restaura el color negro y se aborta la validación.
+        if (valueEnter.trim().isEmpty()) {
+            currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: red;", "-fx-text-fill: black;"));
+            return;
+        }
+
+        //Cálculos para encontrar la esquina superior izquierda del bloque 2x3.
+        int beginRowBlock = (currentRow / 2) * 2;
+        int beginColBlock = (currentCol / 3) * 3;
+
+        boolean repeat = false;
+
+        //Solamente se recorre las 6 casillas del bloque correspondiente.
+        for (int r = beginRowBlock; r < beginRowBlock + 2; r++){
+            for (int c = beginColBlock; c < beginColBlock + 3; c++){
+
+                //Evitar que la casilla se compare consigo misma.
+                if (r == currentRow && c == currentCol) continue;
+
+                //Convertir las coordenadas en dos dimensiones (2D) a índice lineal (1D).
+                int indexComparation = (r * 6) + c;
+
+                CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
+
+                //Comparar los valores para buscar coincidencias.
+                if (valueEnter.equals(otherCell.getText())) {
+                    repeat = true;
+                    break;
+                }
+            }
+        }
+
+        //Remplazo de la cadena CSS para no destruir la configuración de los bordes.
+        if (repeat) {
+            if (!currentCell.getStyle().contains("-fx-text-fill: red;")) {
+                currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: black;", "-fx-text-fill: red;"));
+            }
+        } else {
+            currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: red;", "-fx-text-fill: black;"));
         }
     }
 }
