@@ -22,7 +22,6 @@ public class AlertBox implements IAlertBox {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(message);
-        alert.showAndWait();
 
         Optional<ButtonType> result = alert.showAndWait();
 

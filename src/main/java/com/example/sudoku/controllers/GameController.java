@@ -25,21 +25,26 @@ public class GameController {
 
     @FXML void onActionHelpButton() {}
 
-    @FXML void onActionEnterButton(){
+    @FXML void onActionEnterButton(){}
+
+    @FXML void onActionResetButton() {
         AlertBox alertBox = new AlertBox();
-        alertBox.showAlertBox(
-                "Confirmacion",
-                "Prueba",
-                "Ola"
-        );
+//        alertBox.showAlertBox(
+//                "Reinicio de partida.",
+//                "",
+//                "Reiniciar la partida implica cambiar de tablero."
+//        );
 
         boolean safeConfirm = alertBox.showConfirmationBox(
-                "Confirmar Acción",
-                "¿Estás seguro de que deseas salir?",
-                "Perderás todo el progreso de la partida actual."
+                "CONFIRMACIÓN DE ACCIÓN",
+                "",
+                "¿Estás seguro de que deseas reiniciar el tablero?\n" +
+                        "Perderás todo el progreso de la partida actual."
         );
+
         if (safeConfirm) {
-            System.out.println("El usuario aceptó salir.");
+            System.out.println("El usuario aceptó reiniciar.");
+            initialize();
         } else {
             System.out.println("El usuario canceló la acción.");
         }
