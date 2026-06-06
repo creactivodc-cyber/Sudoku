@@ -134,28 +134,69 @@ public class GameController {
             return;
         }
 
-        //Cálculos para encontrar la esquina superior izquierda del bloque 2x3.
-        int beginRowBlock = (currentRow / 2) * 2;
-        int beginColBlock = (currentCol / 3) * 3;
-
+        //Atributo para establecer si se repite.
         boolean repeat = false;
 
-        //Solamente se recorre las 6 casillas del bloque correspondiente.
-        for (int r = beginRowBlock; r < beginRowBlock + 2; r++){
-            for (int c = beginColBlock; c < beginColBlock + 3; c++){
+        //Validación fila completa.
+        for (int c = 0; c < 6; c++){
 
-                //Evitar que la casilla se compare consigo misma.
-                if (r == currentRow && c == currentCol) continue;
+            //Medida de seguridad, omitir la iteración si estamos en la casilla exacta que el jugador acaba de modificar.
+            if (c == currentCol) continue;
 
-                //Convertir las coordenadas en dos dimensiones (2D) a índice lineal (1D).
-                int indexComparation = (r * 6) + c;
+            //Fórmula matemática para convertir la coordenada 2D a un índice 1D
+            int indexComparation = (currentRow * 6) + c;
 
+            /* Extracción y Casting: Obtenemos el nodo genérico de la cuadrícula visual (Node)
+            y lo forzamos (casting) a ser tratado como un objeto de la clase CharField. */
+            CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
+
+            //Verificar si el texto ingresado coincide exactamente con el texto de la casilla evaluada.
+            if (valueEnter.equals(otherCell.getText())) {
+                repeat = true;
+                break;
+            }
+        }
+
+        //Validación de la columna total
+        if (!repeat) {
+            for (int r = 0; r < 6; r++) {
+
+                // Evitar compararse consigo misma
+                if (r == currentRow) continue;
+
+                //Calcular el índice lineal variando en la variable de la fila (r).
+                int indexComparation = (r * 6) + currentCol;
                 CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
 
-                //Comparar los valores para buscar coincidencias.
                 if (valueEnter.equals(otherCell.getText())) {
                     repeat = true;
                     break;
+                }
+            }
+        }
+
+        if (!repeat) {
+            //Cálculos para encontrar la esquina superior izquierda del bloque 2x3.
+            int beginRowBlock = (currentRow / 2) * 2;
+            int beginColBlock = (currentCol / 3) * 3;
+
+            //Solamente se recorre las 6 casillas del bloque correspondiente.
+            for (int r = beginRowBlock; r < beginRowBlock + 2; r++){
+                for (int c = beginColBlock; c < beginColBlock + 3; c++){
+
+                    //Evitar que la casilla se compare consigo misma.
+                    if (r == currentRow && c == currentCol) continue;
+
+                    //Convertir las coordenadas en dos dimensiones (2D) a índice lineal (1D).
+                    int indexComparation = (r * 6) + c;
+
+                    CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
+
+                    // Comparación de cadenas, verificar si el texto ingresado coincide exactamente con el texto de la casilla evaluada.
+                    if (valueEnter.equals(otherCell.getText())) {
+                        repeat = true;
+                        break;
+                    }
                 }
             }
         }
