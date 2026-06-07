@@ -96,7 +96,7 @@ public class Grid {
         return false;
     };
 
-    public void generateGrid2() {
+    public void generateGrid() {
         gridList.clear();
         for (int i = 0; i < size * size; i++) gridList.add(0);
         if (resolver(0, 0)) {
@@ -114,8 +114,7 @@ public class Grid {
     };    
 
     public ArrayList<Integer> getGrid() {
-        generateGrid2();
-        System.out.println("Cuadrícula generada: " + gridList);
+        generateGrid();
         return gridList;
     }
 }
