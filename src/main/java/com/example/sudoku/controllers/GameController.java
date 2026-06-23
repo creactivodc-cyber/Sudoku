@@ -1,16 +1,11 @@
 package com.example.sudoku.controllers;
 
-import com.example.sudoku.models.AlertBox;
-import com.example.sudoku.models.CharField;
-import com.example.sudoku.models.Grid;
-import com.example.sudoku.models.Helps;
+import com.example.sudoku.models.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-
-import java.util.ArrayList;
 
 public class GameController {
 
@@ -20,35 +15,83 @@ public class GameController {
     @FXML private Button helpButton;
     @FXML private Button enterButton;
 
-    private Grid grid = new Grid();
+    //Instancia principal del Modelo de negocio, contiene las reglas del juego y su estado.
+    private Game game = new Game();
 
-    private ArrayList<Integer> gridValues = grid.getGrid();
+    /**
+     * Inicializar la vista base del juego al abrir la ventana.
+     * Limpia el tablero y establece el boton en su estado inicial.
+     */
+    public void initialize() {
+        gridLabel.getChildren().clear();
+        enterButton.setText(game.getButtonState());
+    }
 
-    @FXML void onActionHelpButton() {
-        Helps helps = new Helps();
+    /**
+     * Boton principal de la partida, genera el tablero como tambien, comprueba
+     * la posible victoria.
+     */
+    @FXML
+    void onActionEnterButton(){
+        if (game.getButtonState().equals("JUGAR")) {
 
-        boolean help = helps.revealNumber(gridLabel, gridValues);
+            //Genera la logica interna y luego pinta la interfaz.
+            game.startNewGame();
+            renderBoard();
 
-        if (!help) {
+            //Cambio de estado del boton.
+            game.setButtonState("COMPROBAR");
+            enterButton.setText(game.getButtonState());
+        } else if (game.getButtonState().equals("COMPROBAR")) {
+
+            //El meotodo realiza la verificacion final.
+            verifyConditionWin();
+        }
+    }
+
+    /**
+     * Consultar al Modelo si hay posibilidad de pedir una ayuda (revelar un numero)
+     * Actualiza el tablero, agregando el numero.
+     * Si quedan 2 o menos casillas vacias, la ayuda no sera valida y no se revelara.
+     */
+    @FXML
+    void onActionHelpButton() {
+
+        //Bloqueo para evitar dar ayudas si el juego no se ha iniciado.
+        if (game.getButtonState().equals("JUGAR"))
+            return;
+
+        //Solicitar el indice para la ayuda.
+        int revealedIndex = game.requestHelp();
+
+        if (revealedIndex == -1) {
+
+            //Cuando se niega la ayuda porque quedan 2 o menos casillas por revelar
+            //Entonces aparece este cuadro de alerta
             AlertBox alertBox = new AlertBox();
             alertBox.showAlertBox(
                     "Límite de Ayudas",
                     "No hay más ayudas disponibles.",
-                    "¡Ya casi lo logras! Te quedan 2 números o menos para terminar."
+                    "Te quedan 2 números o menos para terminar."
             );
+        } else {
+
+            //El modelo da la ayuda, luego actualiza la vista.
+            CharField winCell = (CharField) gridLabel.getChildren().get(revealedIndex);
+            int correctAnswer = game.getGridValues().get(revealedIndex);
+
+            winCell.setText(String.valueOf(correctAnswer));
+            winCell.setEditable(false);
+            winCell.setStyle(winCell.getStyle() + " -fx-text-fill: blue;");
         }
     }
 
-    @FXML void onActionEnterButton(){}
-
-    @FXML void onActionResetButton() {
+    /**
+     * Boton para reiniciar toda la partida con una confirmacion para proceder.
+     */
+    @FXML
+    void onActionResetButton() {
         AlertBox alertBox = new AlertBox();
-//        alertBox.showAlertBox(
-//                "Reinicio de partida.",
-//                "",
-//                "Reiniciar la partida implica cambiar de tablero."
-//        );
-
         boolean safeConfirm = alertBox.showConfirmationBox(
                 "CONFIRMACIÓN DE ACCIÓN",
                 "",
@@ -58,54 +101,43 @@ public class GameController {
 
         if (safeConfirm) {
             System.out.println("El usuario aceptó reiniciar.");
+            game.resetGameData();
             initialize();
-        } else {
-            System.out.println("El usuario canceló la acción.");
         }
     }
 
     /**
-     * Inicializa la interfaz grafíca del tablero de Sudoku.
-     * Recorre y posiciona 36 casillas (6x6) basadas en los valores del modelo.
-     * Aplica un enmascaramiento al 60% de las casillas.
-     * Calcular y dibujar dinámicamente los bordes con CSS.
+     * Construccion visual del Sudoku en la interfaz.
+     * Recorre las coordenadas y asigna la probablidad de ocultamiento de las casillas.
+     * Dibuja los bordes de los sub-bloques y añade Listeners de validacion.
      */
-    public void initialize() {
-        //Limpiar el gridLabel
+    private void renderBoard() {
         gridLabel.getChildren().clear();
 
         for (int fila = 0; fila < 6; fila++) {
             for (int col = 0; col < 6; col++) {
 
-                /*index Sirve para almacenar la formúla matematica, convierte las coordenadas (x, y)
-                      en una posición lineal. */
+                //Conversion de matriz 2D a indice 1D para consultar al modelo.
                 int index = (fila * 6) + col;
-                int number_result = gridValues.get(index);
+                int number_result = game.getGridValues().get(index);
 
-                // Probabilidad para ocultar casilla (60%)
+                //Probabilidad del 60% para generar una casilla vacia.
                 boolean hideBox = Math.random() < 0.6;
-
                 CharField charField;
-
-                // Definir color de fondo
-                /* If - else en una sola línea
-                * Si hideBox es True, el fondo séra blanco, Si es False, séra gris.
-                * */
                 String backGroundColor = hideBox ? "-fx-background-color: #ffffff;" : "-fx-background-color: #cecece;";
 
-                /*
-                * Si la casilla debe estar oculta, llama al constructor vacío (séra blanca la casilla)
-                * Si no, convierte el número de la lista a una letra (int -> char), llama a otro constructor
-                * para que se genere un número y no sea editable.
-                * */
+                //Sincronizacion inicial entre CharField (Vista) y PlayerBorad (Modelo)
                 if (hideBox) {
                     charField = new CharField();
+                    game.setPlayerMove(fila, col, 0);
                 } else {
                     char numberChar = String.valueOf(number_result).charAt(0);
                     charField = new CharField(numberChar);
                     charField.setEditable(false);
+                    game.setPlayerMove(fila, col, number_result);
                 }
 
+                //Calculo para el grosor de los bordes (Cuadriculas 2x3)
                 int bordeArriba = (fila == 0) ? 3 : 1;
                 int bordeDerecha = (col == 2 || col == 5) ? 3 : 1;
                 int bordeAbajo = (fila == 1 || fila == 3 || fila == 5) ? 3 : 1;
@@ -114,20 +146,14 @@ public class GameController {
                 String estiloBordes = String.format("-fx-border-color: black; -fx-border-width: %d %d %d %d;",
                         bordeArriba, bordeDerecha, bordeAbajo, bordeIzquierda);
 
-                //Establecer por defecto el estilo en color negro con bordes negros y fondo negro al Char.
                 charField.setStyle(backGroundColor + " " + estiloBordes + " -fx-text-fill: black;");
-
                 charField.setPrefWidth(100);
                 gridLabel.add(charField, col, fila);
 
-                /**
-                 * Si la casilla es editable (Está oculta), se agrega un Listener.
-                 * Evento para escuchar cada tecla presionada por el jugador para validar.
-                 */
+                //Listener en tiempo real solo a las casillas jugables
                 if(hideBox) {
                     final int f = fila;
                     final int c = col;
-
                     charField.textProperty().addListener((observable, oldValue, newValue) -> {
                         validateBlockRealTime(charField, newValue, f, c);
                     });
@@ -137,96 +163,53 @@ public class GameController {
     }
 
     /**
-     * Validación en tiempo real si el número del jugador existe.
-     * La comparación válida dentro del bloque 2x3 Si el número se repite,
-     * cambiará el color de texto si el número se repite para alertar.
-     * @param currentCell La casilla (CharField) que el jugador edita actualmente.
-     * @param valueEnter El texto/número que el jugador acaba de dígitar.
-     * @param currentRow La posición actual en Y (row - fila).
-     * @param currentCol La posición actual en x (col - columna).
+     * Procesar en tiempo real las entradas del usuario para sincronizar con el modelo logico
+     * y aplica colores en la fuente (rojo/negro) segun la validez del ~movimiento.
+     * @param currentCell Casilla visual de que esta siendo modificada.
+     * @param valueEnter El texto digitando en formato String.
+     * @param currentRow Fila actual de la casilla
+     * @param currentCol Columna actual de la casilla.
      */
     private void validateBlockRealTime(CharField currentCell, String valueEnter, int currentRow, int currentCol) {
 
-        //Si el jugador borra el contenido, entonces se restaura el color negro y se aborta la validación.
+        //Borrado de las casillas, restaura el estilo visual y limpia el modelo.
         if (valueEnter.trim().isEmpty()) {
+            game.setPlayerMove(currentRow, currentCol, 0);
             currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: red;", "-fx-text-fill: black;"));
             return;
         }
 
-        //Atributo para establecer si se repite.
-        boolean repeat = false;
+        int numericValue = Integer.parseInt(valueEnter);
 
-        //Validación fila completa.
-        for (int c = 0; c < 6; c++){
+        //Informar al Modelo el nuevo movimiento.
+        game.setPlayerMove(currentRow, currentCol, numericValue);
 
-            //Medida de seguridad, omitir la iteración si estamos en la casilla exacta que el jugador acaba de modificar.
-            if (c == currentCol) continue;
+        //delegar la verificacion al Modelo.
+        boolean isValid = game.isMoveValid(currentRow, currentCol, numericValue);
 
-            //Fórmula matemática para convertir la coordenada 2D a un índice 1D
-            int indexComparation = (currentRow * 6) + c;
-
-            /* Extracción y Casting: Obtenemos el nodo genérico de la cuadrícula visual (Node)
-            y lo forzamos (casting) a ser tratado como un objeto de la clase CharField. */
-            CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
-
-            //Verificar si el texto ingresado coincide exactamente con el texto de la casilla evaluada.
-            if (valueEnter.equals(otherCell.getText())) {
-                repeat = true;
-                break;
-            }
-        }
-
-        //Validación de la columna total
-        if (!repeat) {
-            for (int r = 0; r < 6; r++) {
-
-                // Evitar compararse consigo misma
-                if (r == currentRow) continue;
-
-                //Calcular el índice lineal variando en la variable de la fila (r).
-                int indexComparation = (r * 6) + currentCol;
-                CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
-
-                if (valueEnter.equals(otherCell.getText())) {
-                    repeat = true;
-                    break;
-                }
-            }
-        }
-
-        if (!repeat) {
-            //Cálculos para encontrar la esquina superior izquierda del bloque 2x3.
-            int beginRowBlock = (currentRow / 2) * 2;
-            int beginColBlock = (currentCol / 3) * 3;
-
-            //Solamente se recorre las 6 casillas del bloque correspondiente.
-            for (int r = beginRowBlock; r < beginRowBlock + 2; r++){
-                for (int c = beginColBlock; c < beginColBlock + 3; c++){
-
-                    //Evitar que la casilla se compare consigo misma.
-                    if (r == currentRow && c == currentCol) continue;
-
-                    //Convertir las coordenadas en dos dimensiones (2D) a índice lineal (1D).
-                    int indexComparation = (r * 6) + c;
-
-                    CharField otherCell = (CharField) gridLabel.getChildren().get(indexComparation);
-
-                    // Comparación de cadenas, verificar si el texto ingresado coincide exactamente con el texto de la casilla evaluada.
-                    if (valueEnter.equals(otherCell.getText())) {
-                        repeat = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        //Remplazo de la cadena CSS para no destruir la configuración de los bordes.
-        if (repeat) {
+        //Condicional basada en al respuesta del modelo, genera una retroalimentacion visual.
+        if (!isValid) {
             if (!currentCell.getStyle().contains("-fx-text-fill: red;")) {
                 currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: black;", "-fx-text-fill: red;"));
             }
         } else {
             currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: red;", "-fx-text-fill: black;"));
+        }
+    }
+
+    /**
+     * Consultar al modelo si el jugador a completado correctamente el tablero
+     * Genera un cuadro de dialogo como respuesta.
+     */
+    private void verifyConditionWin() {
+        AlertBox alertBox = new AlertBox();
+
+        if (!game.isBoardFull()) {
+            alertBox.showAlertBox("Partida Incompleta", "Todavía quedan casillas vacías.", "Debes rellenar todo el tablero antes de comprobar.");
+        } else if (!game.isGameWon()) {
+            alertBox.showAlertBox("Revisión de Tablero", "Hay números incorrectos.", "Revisa tus respuestas.");
+        } else {
+            alertBox.showAlertBox("¡VICTORIA!", "¡Felicitaciones!", "Lograste resolver el Sudoku correctamente :D.");
         }
     }
 }

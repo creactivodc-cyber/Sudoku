@@ -11,7 +11,7 @@
     <children>
         <HBox fx:id="HboxFields" alignment="CENTER" prefHeight="500.0" style="-fx-background-color: gray;">
             <children>
-                <GridPane fx:id="gridLabel" alignment="CENTER" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;">
+                <GridPane fx:id="gridLabel" alignment="CENTER" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" style="-fx-background-color: white;">
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
