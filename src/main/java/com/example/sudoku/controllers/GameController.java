@@ -179,7 +179,38 @@ public class GameController {
             return;
         }
 
-        int numericValue = Integer.parseInt(valueEnter);
+        int numericValue;
+
+        //Validacion de entrada de caracteres, es un numero o una letra.
+        try {
+            //Convertir el texto, si es un numero valido, no genera error.
+            numericValue = Integer.parseInt(valueEnter);
+        } catch (NumberFormatException e) {
+            //Si escribió una letra o un símbolo, el catch atrapa el error para no romperse.
+            //Le asignamos un 0 a propósito para que no pase la prueba del siguiente paso.
+            numericValue = 0;
+        }
+
+        //Validar si el numero estra entre 1 y 6
+        if (numericValue < 1 || numericValue > 6) {
+
+            //Pintar la fuente la entrada invalida.
+            if (!currentCell.getStyle().contains("-fx-text-fill: red;")) {
+                currentCell.setStyle(currentCell.getStyle().replace("-fx-text-fill: black;", "-fx-text-fill: red;"));
+            }
+
+            AlertBox alertBox = new AlertBox();
+            alertBox.showAlertBox(
+                    "Entrada Invalida",
+                    "Caracter no permitido.",
+                    "Por favor, ingresa unicamente numeros del 1 al 6."
+            );
+
+            game.setPlayerMove(currentRow, currentCol, 0);
+
+            //Abortar aqui si la entrada es invalida y evitar que se haga algun procedimiento matematico.
+            return;
+        }
 
         //Informar al Modelo el nuevo movimiento.
         game.setPlayerMove(currentRow, currentCol, numericValue);
